@@ -37,7 +37,8 @@ class CreateContactController extends Controller
                 ->setStatusCode(200);
         } catch (\Exception $e) {
             DB::rollBack();
-
+            report($e);
+            
             return redirect()->route('contacts.create')
                 ->with('error', 'Error creating contact: ' . $e->getMessage())
                 ->withInput();
