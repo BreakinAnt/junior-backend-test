@@ -17,7 +17,7 @@ class ContactsRequest extends FormRequest
     {
         return [
            'name'   => [ 'required', 'string', new NameIsValid()],
-           'email'  => [ 'required', 'email'],
+           'email'  => [ 'required', 'email', 'unique:contacts,email' ],
            'phone'  => [ 'required', 'string', new PhoneIsValid()],
         ];
     }
