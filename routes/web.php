@@ -7,4 +7,5 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::post('/contacts', CreateContactController::class);
+Route::get('/contacts/create', [CreateContactController::class, 'create'])->name('contacts.create');
+Route::post('/contacts', [CreateContactController::class, 'store'])->name('contacts.store');
