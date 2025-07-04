@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\NameIsValid;
+use App\Rules\PhoneIsValid;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ContactsRequest extends FormRequest
@@ -14,7 +16,9 @@ class ContactsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+           'name'   => [ 'required', 'string', new NameIsValid()],
+           'email'  => [ 'required', 'email'],
+           'phone'  => [ 'required', 'string', new PhoneIsValid()],
         ];
     }
 }
