@@ -86,6 +86,12 @@
             </div>
         @endif
 
+        @if(session('error'))
+            <div class="error">
+                {{ session('error') }}
+            </div>
+        @endif
+
         <form action="{{ route('contacts.store') }}" method="POST">
             @csrf
             
