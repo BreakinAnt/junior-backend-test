@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\ContactsRequest;
+use App\Models\Contact;
 use App\Services\ContactService;
 use Illuminate\Support\Facades\DB;
 
@@ -14,6 +15,13 @@ class CreateContactController extends Controller
     public function __construct(ContactService $contactService)
     {
         $this->contactService = $contactService;
+    }
+
+    public function index()
+    {
+        $contacts = $this->contactService->getPagination(10);
+
+        return view('contacts.index', compact(['contacts']));
     }
 
     public function create()
