@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Contact;
 use App\Repositories\Contracts\ContactRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
 
 class ContactService
@@ -49,6 +50,14 @@ class ContactService
         return $this->contactRepository->findById($id);
     }
 
+    /**
+     *
+     * @return Collection
+     */
+    public function getPagination(int $perPage = 15): LengthAwarePaginator 
+    {
+        return $this->contactRepository->getPaginate($perPage);
+    }
     /**
      *
      * @return Collection

@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\Contact;
 use App\Repositories\Contracts\ContactRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ContactRepository implements ContactRepositoryInterface
 {
@@ -35,6 +36,11 @@ class ContactRepository implements ContactRepositoryInterface
     public function getAll(): Collection
     {
         return Contact::all();
+    }
+
+    public function getPaginate(int $perPage = 15): LengthAwarePaginator
+    {
+        return Contact::paginate($perPage);
     }
 
     /**
