@@ -83,7 +83,8 @@ class CreateContactController extends Controller
             DB::commit();
 
             return redirect()->route('contacts.index')
-                ->with('success', 'Contact updated successfully!');
+                ->with('success', 'Contact updated successfully!')
+                ->setStatusCode(200);;
         } catch (\Exception $e) {
             DB::rollBack();
             report($e);
@@ -110,7 +111,8 @@ class CreateContactController extends Controller
             DB::commit();
 
             return redirect()->route('contacts.index')
-                ->with('success', 'Contact deleted successfully!');
+                ->with('success', 'Contact deleted successfully!')
+                ->setStatusCode(200);;
         } catch (\Exception $e) {
             DB::rollBack();
             report($e);
