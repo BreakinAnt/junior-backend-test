@@ -56,7 +56,7 @@ class ContactService
      */
     public function getPagination(int $perPage = 15): LengthAwarePaginator 
     {
-        return $this->contactRepository->getPaginate($perPage);
+        return $this->contactRepository->getPagination($perPage);
     }
     /**
      *

@@ -38,7 +38,7 @@ class ContactRepository implements ContactRepositoryInterface
         return Contact::all();
     }
 
-    public function getPaginate(int $perPage = 15): LengthAwarePaginator
+    public function getPagination(int $perPage = 15): LengthAwarePaginator
     {
         return Contact::paginate($perPage);
     }
