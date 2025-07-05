@@ -40,7 +40,7 @@ class CreateContactController extends Controller
 
             DB::commit();
 
-            return redirect()->route('contacts.create')
+            return redirect()->route('contacts.index')
                 ->with('success', 'Contact created successfully!')
                 ->setStatusCode(200);
         } catch (\Exception $e) {
@@ -50,6 +50,73 @@ class CreateContactController extends Controller
             return redirect()->route('contacts.create')
                 ->with('error', 'Error creating contact: ' . $e->getMessage())
                 ->withInput();
+        }
+    }
+
+    public function edit(int $id)
+    {
+        $contact = $this->contactService->getContactById($id);
+        
+        if (!$contact) {
+            return redirect()->route('contacts.index')
+                ->with('error', 'Contact not found.');
+        }
+
+        return view('contacts.edit', compact('contact'));
+    }
+
+    public function update(ContactsRequest $contactsRequest, int $id)
+    {
+        $data = $contactsRequest->validated();
+
+        DB::beginTransaction();
+
+        try {
+            $contact = $this->contactService->updateContact($id, $data);
+            
+            if (!$contact) {
+                DB::rollBack();
+                return redirect()->route('contacts.index')
+                    ->with('error', 'Contact not found.');
+            }
+
+            DB::commit();
+
+            return redirect()->route('contacts.index')
+                ->with('success', 'Contact updated successfully!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            report($e);
+            
+            return redirect()->route('contacts.edit', $id)
+                ->with('error', 'Error updating contact: ' . $e->getMessage())
+                ->withInput();
+        }
+    }
+
+    public function destroy(int $id)
+    {
+        DB::beginTransaction();
+
+        try {
+            $deleted = $this->contactService->deleteContact($id);
+            
+            if (!$deleted) {
+                DB::rollBack();
+                return redirect()->route('contacts.index')
+                    ->with('error', 'Contact not found.');
+            }
+
+            DB::commit();
+
+            return redirect()->route('contacts.index')
+                ->with('success', 'Contact deleted successfully!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            report($e);
+            
+            return redirect()->route('contacts.index')
+                ->with('error', 'Error deleting contact: ' . $e->getMessage());
         }
     }
 }
