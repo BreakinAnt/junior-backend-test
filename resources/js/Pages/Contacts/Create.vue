@@ -9,12 +9,12 @@
         </div>
         Hello World
         <form @submit.prevent="form.post(route('contacts.store'))">
-            <button type="submit" class="btn">Create Contact</button>
+            <button type="submit" class="btn" :disabled="form.processing">Create Contact</button>
         </form>
     </div>
 </template>
 <script setup>
-import { router, useForm  } from "@inertiajs/vue3";
+import { useForm } from "@inertiajs/vue3";
 import { route } from "ziggy-js";
 
 defineProps({ errors: Object })
