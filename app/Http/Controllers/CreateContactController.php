@@ -61,7 +61,7 @@ class CreateContactController extends Controller
                 ->with('error', 'Contact not found.');
         }
 
-        return view('contacts.edit', compact('contact'));
+        return Inertia::render('Contacts/Create', compact('contact'));
     }
 
     public function update(ContactsRequest $contactsRequest, int $id)
@@ -81,9 +81,7 @@ class CreateContactController extends Controller
 
             DB::commit();
 
-            return redirect()->route('contacts.index')
-                ->with('success', 'Contact updated successfully!')
-                ->setStatusCode(200);;
+            return Inertia::render('Contacts/Create', compact('contact'))->toResponse(\request())->setStatusCode(200);
         } catch (\Exception $e) {
             DB::rollBack();
             report($e);
@@ -103,7 +101,7 @@ class CreateContactController extends Controller
             
             if (!$deleted) {
                 DB::rollBack();
-                return redirect()->route('contacts.index')
+                return to_route('contacts.index')
                     ->with('error', 'Contact not found.');
             }
 
@@ -116,7 +114,7 @@ class CreateContactController extends Controller
             DB::rollBack();
             report($e);
             
-            return redirect()->route('contacts.index')
+            return to_route('contacts.index')
                 ->with('error', 'Error deleting contact: ' . $e->getMessage());
         }
     }

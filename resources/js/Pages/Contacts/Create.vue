@@ -4,9 +4,11 @@
             <!-- Header -->
             <div class="bg-white shadow rounded-lg mb-6">
                 <div class="px-6 py-4 border-b border-gray-200">
-                    <h1 class="text-3xl font-bold text-gray-900">Create New Contact</h1>
+                    <h1 class="text-3xl font-bold text-gray-900">
+                        {{ isEditing ? 'Edit Contact' : 'Create New Contact' }}
+                    </h1>
                     <p class="mt-1 text-sm text-gray-600">
-                        Add a new contact to your list
+                        {{ isEditing ? 'Update contact information' : 'Add a new contact to your list' }}
                     </p>
                 </div>
             </div>
@@ -22,7 +24,7 @@
                         </div>
                         <div class="ml-3">
                             <p class="text-sm font-medium text-green-800">
-                                Contact created successfully!
+                                Contact {{ isEditing ? 'updated' : 'created' }} successfully!
                             </p>
                         </div>
                     </div>
@@ -58,7 +60,7 @@
             <!-- Form -->
             <div class="bg-white shadow rounded-lg">
                 <div class="px-6 py-6">
-                    <form @submit.prevent="form.post(route('contacts.store'))" class="space-y-6">
+                    <form @submit.prevent="submitForm" class="space-y-6">
                         <!-- Name Field -->
                         <div>
                             <label for="name" class="block text-sm font-medium text-gray-700">
@@ -151,9 +153,10 @@
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                 </svg>
                                 <svg v-else class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                                    <path v-if="isEditing" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                                 </svg>
-                                {{ form.processing ? 'Creating...' : 'Create Contact' }}
+                                {{ form.processing ? (isEditing ? 'Updating...' : 'Creating...') : (isEditing ? 'Update Contact' : 'Create Contact') }}
                             </button>
                         </div>
                     </form>
@@ -165,13 +168,43 @@
 <script setup>
 import { Link, useForm } from "@inertiajs/vue3";
 import { route } from "ziggy-js";
+import { computed } from "vue";
 
-defineProps({ errors: Object });
+const props = defineProps({ 
+    errors: Object,
+    contact: {
+        type: Object,
+        default: null
+    }
+});
 
+// Check if we're in edit mode
+const isEditing = computed(() => !!props.contact);
+
+// Format phone number for display
+const formatPhoneDisplay = (phone) => {
+    if (!phone) return '';
+    
+    // Remove all non-digits
+    const cleaned = phone.replace(/\D/g, '');
+    
+    // Format based on length
+    if (cleaned.length === 11) {
+        // Mobile: (11) 99999-9999
+        return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7)}`;
+    } else if (cleaned.length === 10) {
+        // Landline: (11) 9999-9999
+        return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 6)}-${cleaned.slice(6)}`;
+    }
+    
+    return phone;
+};
+
+// Initialize form with existing contact data or empty values
 const form = useForm({
-    name: '',
-    phone: '',
-    email: '',
+    name: props.contact?.name || '',
+    phone: formatPhoneDisplay(props.contact?.phone) || '',
+    email: props.contact?.email || '',
 });
 
 // Format phone number as user types
@@ -189,5 +222,16 @@ const formatPhoneInput = (event) => {
     }
     
     form.phone = value;
+};
+
+// Submit form - handle both create and update
+const submitForm = () => {
+    if (isEditing.value) {
+        // Update existing contact
+        form.put(route('contacts.update', props.contact.id));
+    } else {
+        // Create new contact
+        form.post(route('contacts.store'));
+    }
 };
 </script>
