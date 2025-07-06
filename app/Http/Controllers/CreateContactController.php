@@ -27,7 +27,7 @@ class CreateContactController extends Controller
 
     public function create()
     {
-        return view('contacts.create');
+        return Inertia::render('Contacts/Create');
     }    
     
     public function store(ContactsRequest $contactsRequest)
@@ -41,14 +41,14 @@ class CreateContactController extends Controller
 
             DB::commit();
 
-            return redirect()->route('contacts.index')
+            return to_route('contacts.index')
                 ->with('success', 'Contact created successfully!')
                 ->setStatusCode(200);
         } catch (\Exception $e) {
             DB::rollBack();
             report($e);
             
-            return redirect()->route('contacts.create')
+            return to_route('contacts.create')
                 ->with('error', 'Error creating contact: ' . $e->getMessage())
                 ->withInput();
         }
