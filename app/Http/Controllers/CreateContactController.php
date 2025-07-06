@@ -74,7 +74,7 @@ class CreateContactController extends Controller
         try {
             
             $contact = $this->contactService->updateContact($id, $data);
-            $contact = null;
+
             if (!$contact) {
                 DB::rollBack();
                 return back()->withErrors([
@@ -83,7 +83,7 @@ class CreateContactController extends Controller
             }
 
             DB::commit();
-
+            
             return Inertia::render('Contacts/Create', compact('contact'))->toResponse(\request())->setStatusCode(200);
         } catch (\Exception $e) {
             DB::rollBack();
