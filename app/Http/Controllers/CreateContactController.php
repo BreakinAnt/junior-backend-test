@@ -40,10 +40,8 @@ class CreateContactController extends Controller
             $this->contactService->createContact($data);
 
             DB::commit();
-
-            return to_route('contacts.index')
-                ->with('success', 'Contact created successfully!')
-                ->setStatusCode(200);
+            
+            return Inertia::render('Contacts/Create')->toResponse(\request())->setStatusCode(200);
         } catch (\Exception $e) {
             DB::rollBack();
             report($e);
