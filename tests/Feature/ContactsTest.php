@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use Inertia\Testing\AssertableInertia as Assert;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -55,18 +55,14 @@ class CreateContactsTest extends TestCase
     public function it_should_be_able_to_list_contacts_paginated_by_10_items_per_page(): void
     {
         \App\Models\Contact::factory(20)->create();
-
-        $response = $this->get('/contacts');
-
-        $response->assertStatus(200);
-
-        $response->assertViewIs('contacts.index');
-
-        $response->assertViewHas('contacts');
-
-        $contacts = $response->viewData('contacts');
-
-        $this->assertCount(10, $contacts);
+        
+        $this->get('/contacts')->assertInertia(fn (Assert $page) => $page
+            ->component('Contacts/Index')
+            ->has('contacts')
+            ->has('contacts.data', 10)
+            ->where('contacts.total', 20)
+            ->where('contacts.per_page', 10)
+        );
     }
 
     #[Test]
