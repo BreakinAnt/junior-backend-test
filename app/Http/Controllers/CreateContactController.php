@@ -37,6 +37,7 @@ class CreateContactController extends Controller
         DB::beginTransaction();
 
         try {
+
             $this->contactService->createContact($data);
 
             DB::commit();
@@ -46,9 +47,9 @@ class CreateContactController extends Controller
             DB::rollBack();
             report($e);
             
-            return to_route('contacts.create')
-                ->with('error', 'Error creating contact: ' . $e->getMessage())
-                ->withInput();
+            return back()->withErrors([
+                'message' => 'An unexpected error occurred while creating the contact. Please try again.'
+            ])->withInput();
         }
     }
 
@@ -71,12 +72,14 @@ class CreateContactController extends Controller
         DB::beginTransaction();
 
         try {
-            $contact = $this->contactService->updateContact($id, $data);
             
+            $contact = $this->contactService->updateContact($id, $data);
+            $contact = null;
             if (!$contact) {
                 DB::rollBack();
-                return redirect()->route('contacts.index')
-                    ->with('error', 'Contact not found.');
+                return back()->withErrors([
+                    'message' => 'Contact not found.'
+                ])->withInput();
             }
 
             DB::commit();
@@ -86,9 +89,9 @@ class CreateContactController extends Controller
             DB::rollBack();
             report($e);
             
-            return redirect()->route('contacts.edit', $id)
-                ->with('error', 'Error updating contact: ' . $e->getMessage())
-                ->withInput();
+            return back()->withErrors([
+                'message' => 'An unexpected error occurred while updating the contact. Please try again.'
+            ])->withInput();
         }
     }
 

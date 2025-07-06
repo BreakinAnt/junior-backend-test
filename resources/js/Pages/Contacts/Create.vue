@@ -32,7 +32,7 @@
             </div>
 
             <!-- Error Messages -->
-            <div v-if="errors && Object.keys(errors).length > 0" class="mb-6">
+            <div v-if="filteredErrors && Object.keys(filteredErrors).length > 0" class="mb-6">
                 <div class="bg-red-50 border border-red-200 rounded-md p-4">
                     <div class="flex">
                         <div class="flex-shrink-0">
@@ -46,11 +46,32 @@
                             </h3>
                             <div class="mt-2 text-sm text-red-700">
                                 <ul class="list-disc list-inside space-y-1">
-                                    <li v-for="(error, field) in errors" :key="field">
+                                    <li v-for="(error, field) in filteredErrors" :key="field">
                                         <span class="font-medium">{{ field.charAt(0).toUpperCase() + field.slice(1) }}:</span>
                                         {{ Array.isArray(error) ? error[0] : error }}
                                     </li>
                                 </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Generic Error Message -->
+            <div v-if="genericError || errors?.message" class="mb-6">
+                <div class="bg-red-50 border border-red-200 rounded-md p-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg class="h-5 w-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-red-800">
+                                An error occurred
+                            </h3>
+                            <div class="mt-2 text-sm text-red-700">
+                                <p>{{ genericError || errors?.message }}</p>
                             </div>
                         </div>
                     </div>
@@ -168,7 +189,7 @@
 <script setup>
 import { Link, useForm } from "@inertiajs/vue3";
 import { route } from "ziggy-js";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 
 const props = defineProps({ 
     errors: Object,
@@ -180,6 +201,19 @@ const props = defineProps({
 
 // Check if we're in edit mode
 const isEditing = computed(() => !!props.contact);
+
+// Generic error message state
+const genericError = ref('');
+
+// Filter out generic message from field-specific errors
+const filteredErrors = computed(() => {
+    if (!props.errors) return {};
+    
+    const filtered = { ...props.errors };
+    delete filtered.message;
+    
+    return filtered;
+});
 
 // Format phone number for display
 const formatPhoneDisplay = (phone) => {
@@ -226,12 +260,28 @@ const formatPhoneInput = (event) => {
 
 // Submit form - handle both create and update
 const submitForm = () => {
+    genericError.value = '';
+    
     if (isEditing.value) {
-        // Update existing contact
-        form.put(route('contacts.update', props.contact.id));
+        form.put(route('contacts.update', props.contact.id), {
+            onError: (errors) => {
+                genericError.value = 'An unexpected error occurred while updating the contact. Please try again.';
+                if (errors && errors.message) {
+                    // If there's a generic error message
+                    genericError.value = errors.message;
+                }
+            }
+        });
     } else {
-        // Create new contact
-        form.post(route('contacts.store'));
+        form.post(route('contacts.store'), {
+            onError: (errors) => {
+                genericError.value = 'An unexpected error occurred while creating the contact. Please try again.';
+                if (errors && errors.message) {
+                    // If there's a generic error message
+                    genericError.value = errors.message;
+                }
+            }
+        });
     }
 };
 </script>
