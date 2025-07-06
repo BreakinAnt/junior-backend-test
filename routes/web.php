@@ -4,7 +4,7 @@ use App\Http\Controllers\CreateContactController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return Inertia\Inertia::render('hello', ['user' => ['name' => 'Lorem']]);
 });
 
 Route::get('/contacts', [CreateContactController::class, 'index'])->name('contacts.index');
