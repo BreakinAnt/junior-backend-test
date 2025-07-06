@@ -3,10 +3,6 @@
 use App\Http\Controllers\CreateContactController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return Inertia\Inertia::render('hello', ['user' => ['name' => 'Lorem']]);
-});
-
 Route::get('/contacts', [CreateContactController::class, 'index'])->name('contacts.index');
 Route::get('/contacts/create', [CreateContactController::class, 'create'])->name('contacts.create');
 Route::post('/contacts', [CreateContactController::class, 'store'])->name('contacts.store');

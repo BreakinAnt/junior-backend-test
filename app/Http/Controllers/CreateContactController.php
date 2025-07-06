@@ -7,6 +7,7 @@ use App\Http\Requests\ContactsRequest;
 use App\Models\Contact;
 use App\Services\ContactService;
 use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class CreateContactController extends Controller
 {
@@ -21,7 +22,7 @@ class CreateContactController extends Controller
     {
         $contacts = $this->contactService->getPagination(10);
 
-        return view('contacts.index', compact(['contacts']));
+        return Inertia::render('Contacts/Index', compact(['contacts']));
     }
 
     public function create()
