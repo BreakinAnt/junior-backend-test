@@ -111,10 +111,6 @@ const props = defineProps({
         type: String,
         default: 'Search contacts...'
     },
-    showDeletedAt: {
-        type: Boolean,
-        default: false
-    },
     routeName: {
         type: String,
         required: true
@@ -129,13 +125,26 @@ const hasActiveFilters = computed(() => {
     return localSearch.value || localSortBy.value !== 'name' || localSortDirection.value !== 'asc'
 })
 
+const showDeletedAt = computed(() => {
+    return props.routeName === 'contacts.trash'
+})
+
 // Debounced search function
 const debouncedSearch = debounce((searchTerm) => {
-    router.get(route(props.routeName), {
+    const params = {
         search: searchTerm,
-        sort_by: localSortBy.value,
-        sort_direction: localSortDirection.value
-    }, {
+        sort: localSortBy.value,
+        direction: localSortDirection.value
+    }
+    
+    // Remove empty values
+    Object.keys(params).forEach(key => {
+        if (!params[key]) {
+            delete params[key]
+        }
+    })
+    
+    router.get(route(props.routeName), params, {
         preserveState: true,
         replace: true
     })
@@ -146,11 +155,20 @@ const handleSearch = () => {
 }
 
 const handleSort = () => {
-    router.get(route(props.routeName), {
+    const params = {
         search: localSearch.value,
-        sort_by: localSortBy.value,
-        sort_direction: localSortDirection.value
-    }, {
+        sort: localSortBy.value,
+        direction: localSortDirection.value
+    }
+    
+    // Remove empty values
+    Object.keys(params).forEach(key => {
+        if (!params[key]) {
+            delete params[key]
+        }
+    })
+    
+    router.get(route(props.routeName), params, {
         preserveState: true,
         replace: true
     })
