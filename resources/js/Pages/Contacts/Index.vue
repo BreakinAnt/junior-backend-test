@@ -36,7 +36,7 @@
                     </div>
                     
                     <div class="card-actions-right">
-                        Showing {{ contacts.data?.length || 0 }} of {{ contacts.total || 0 }} contacts
+                        Showing {{ contactsCount }} of {{ totalContacts }} contacts
                     </div>
                 </div>
             </div>
@@ -74,7 +74,7 @@
             />
 
             <!-- Contacts List -->
-            <div v-if="contacts.data && contacts.data.length > 0" class="contact-list">
+            <div v-if="hasContacts" class="contact-list">
                 <div class="divide-y divide-gray-200">
                     <div v-for="contact in contacts.data" 
                          :key="contact.id" 
@@ -85,17 +85,13 @@
                                     <div class="contact-avatar">
                                         <div class="contact-avatar-circle">
                                             <span class="contact-avatar-text">
-                                                {{ contact.name.charAt(0).toUpperCase() }}
+                                                {{ getContactInitials(contact.name) }}
                                             </span>
                                         </div>
                                     </div>
                                     <div class="contact-info">
-                                        <div class="contact-name">
-                                            {{ contact.name }}
-                                        </div>
-                                        <div class="contact-email">
-                                            {{ contact.email }}
-                                        </div>
+                                        <div class="contact-name">{{ contact.name }}</div>
+                                        <div class="contact-email">{{ contact.email }}</div>
                                         <div v-if="contact.phone" class="contact-phone">
                                             {{ formatPhone(contact.phone) }}
                                         </div>
@@ -124,7 +120,7 @@
                 </div>
 
                 <!-- Pagination -->
-                <div v-if="contacts.links && contacts.links.length > 3" class="pagination-container">
+                <div v-if="hasPagination" class="pagination-container">
                     <div class="pagination-wrapper">
                         <div class="pagination-mobile">
                             <Link v-if="contacts.prev_page_url" 
@@ -141,7 +137,7 @@
                         <div class="pagination-desktop">
                             <div>
                                 <p class="pagination-info">
-                                    Showing <span class="font-medium">{{ contacts.from || 0 }}</span> to <span class="font-medium">{{ contacts.to || 0 }}</span> of <span class="font-medium">{{ contacts.total || 0 }}</span> results
+                                    Showing <span class="font-medium">{{ contacts.from || 0 }}</span> to <span class="font-medium">{{ contacts.to || 0 }}</span> of <span class="font-medium">{{ totalContacts }}</span> results
                                 </p>
                             </div>
                             <div>
@@ -209,45 +205,67 @@
 <script setup>
 import { Link, router } from '@inertiajs/vue3'
 import ContactFilter from '@/Components/ContactFilter.vue'
+import { computed } from 'vue'
 
+// Props
 const props = defineProps({ 
-    contacts: Object,
+    contacts: {
+        type: Object,
+        required: true
+    },
     search: String,
     sort: String,
     direction: String,
     flash: Object
 })
 
-// Format phone number to Brazilian format
-const formatPhone = (phone) => {
-    if (!phone) return ''
+// Computed properties
+const hasContacts = computed(() => 
+    props.contacts.data && props.contacts.data.length > 0
+)
+
+const contactsCount = computed(() => 
+    props.contacts.data?.length || 0
+)
+
+const totalContacts = computed(() => 
+    props.contacts.total || 0
+)
+
+const hasPagination = computed(() => 
+    props.contacts.links && props.contacts.links.length > 3
+)
+
+// Utility functions
+function formatPhone(phone) {
+    if (!phone) return '';
     
-    // Remove all non-digits
-    const cleaned = phone.replace(/\D/g, '')
+    const cleaned = phone.replace(/\D/g, '');
     
-    // Format based on length
     if (cleaned.length === 11) {
-        // Mobile: (11) 99999-9999
-        return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7)}`
+        return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7)}`;
     } else if (cleaned.length === 10) {
-        // Landline: (11) 9999-9999
-        return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 6)}-${cleaned.slice(6)}`
+        return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 6)}-${cleaned.slice(6)}`;
     }
     
-    return phone
+    return phone;
 }
 
-// Delete contact with confirmation (move to trash)
-const deleteContact = (contactId) => {
+function getContactInitials(name) {
+    return name.charAt(0).toUpperCase();
+}
+
+// Event handlers
+function deleteContact(contactId) {
     if (confirm('Are you sure you want to delete this contact? It will be moved to trash and can be restored later.')) {
         router.delete(route('contacts.destroy', contactId), {
             onSuccess: () => {
-                // Success message will be handled by flash messages
+                // Success message handled by flash messages
             },
             onError: () => {
-                alert('Error deleting contact. Please try again.')
+                alert('Error deleting contact. Please try again.');
             }
-        })
+        });
     }
 }
 </script>
