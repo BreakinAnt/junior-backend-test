@@ -110,8 +110,7 @@ class CreateContactController extends Controller
             DB::commit();
 
             return to_route('contacts.index')
-                ->with('success', 'Contact moved to trash successfully!')
-                ->setStatusCode(200);
+                ->with('success', 'Contact moved to trash successfully!');
         } catch (\Exception $e) {
             DB::rollBack();
             report($e);
