@@ -178,7 +178,12 @@
 import { Link, router } from '@inertiajs/vue3'
 import ContactFilter from '@/Components/ContactFilter.vue'
 
-defineProps({ contacts: Object })
+defineProps({ 
+    contacts: Object,
+    search: String,
+    sort: String,
+    direction: String
+})
 
 // Format phone number to Brazilian format
 const formatPhone = (phone) => {
