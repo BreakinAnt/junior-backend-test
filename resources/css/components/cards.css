@@ -1,0 +1,46 @@
+@import "tailwindcss";
+/* Card Components */
+.card {
+    @apply bg-white shadow rounded-lg;
+}
+
+.card-header {
+    @apply px-6 py-4 border-b border-gray-200;
+}
+
+.card-body {
+    @apply px-6 py-4;
+}
+
+.card-title {
+    @apply text-3xl font-bold text-gray-900;
+}
+
+.card-subtitle {
+    @apply mt-1 text-sm text-gray-600;
+}
+
+.card-actions {
+    @apply flex justify-between items-center;
+}
+
+.card-actions-left {
+    @apply flex items-center space-x-4;
+}
+
+.card-actions-right {
+    @apply text-sm text-gray-600;
+}
+
+/* Layout Components */
+.page-container {
+    @apply min-h-screen bg-gray-50 py-8;
+}
+
+.page-wrapper {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.section-spacing {
+    @apply mb-6;
+}

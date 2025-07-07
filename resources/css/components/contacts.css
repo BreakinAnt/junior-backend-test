@@ -1,0 +1,69 @@
+@import "tailwindcss";
+/* Contact List Components */
+.contact-list {
+    @apply bg-white shadow rounded-lg overflow-hidden;
+}
+
+.contact-list-item {
+    @apply px-6 py-4 hover:bg-gray-50 transition-colors duration-150;
+}
+
+.contact-list-item-trashed {
+    @apply px-6 py-4 bg-red-50 hover:bg-red-100 transition-colors duration-150;
+}
+
+.contact-list-content {
+    @apply flex items-center justify-between;
+}
+
+.contact-list-info {
+    @apply flex-1;
+}
+
+.contact-list-details {
+    @apply flex items-center;
+}
+
+.contact-avatar {
+    @apply flex-shrink-0 h-10 w-10;
+}
+
+.contact-avatar-circle {
+    @apply h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center;
+}
+
+.contact-avatar-circle-trashed {
+    @apply h-10 w-10 rounded-full bg-red-100 flex items-center justify-center;
+}
+
+.contact-avatar-text {
+    @apply text-sm font-medium text-blue-600;
+}
+
+.contact-avatar-text-trashed {
+    @apply text-sm font-medium text-red-600;
+}
+
+.contact-info {
+    @apply ml-4;
+}
+
+.contact-name {
+    @apply text-sm font-medium text-gray-900;
+}
+
+.contact-email {
+    @apply text-sm text-gray-500;
+}
+
+.contact-phone {
+    @apply text-sm text-gray-500;
+}
+
+.contact-deleted-date {
+    @apply text-xs text-gray-500 mt-1;
+}
+
+.contact-actions {
+    @apply flex items-center space-x-2;
+}

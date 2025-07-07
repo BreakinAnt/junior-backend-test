@@ -2,6 +2,9 @@
 @plugin "daisyui";
 @source "../views";
 
+/* Import contact system components */
+@import "./contacts.css";
+
 @theme {
     --font-sans: "Figtree", sans-serif;
 }

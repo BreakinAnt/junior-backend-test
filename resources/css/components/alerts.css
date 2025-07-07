@@ -1,0 +1,66 @@
+@import "tailwindcss";
+/* Alert Components */
+.alert {
+    @apply mb-6;
+}
+
+.alert-success {
+    @apply bg-green-50 border border-green-200 rounded-md p-4;
+}
+
+.alert-error {
+    @apply bg-red-50 border border-red-200 rounded-md p-4;
+}
+
+.alert-content {
+    @apply flex;
+}
+
+.alert-icon {
+    @apply w-5 h-5;
+}
+
+.alert-icon-success {
+    @apply text-green-400;
+}
+
+.alert-icon-error {
+    @apply text-red-400;
+}
+
+.alert-message {
+    @apply ml-3;
+}
+
+.alert-text-success {
+    @apply text-sm text-green-800;
+}
+
+.alert-text-error {
+    @apply text-sm text-red-800;
+}
+
+/* Empty State Components */
+.empty-state {
+    @apply bg-white shadow rounded-lg;
+}
+
+.empty-state-content {
+    @apply text-center py-12;
+}
+
+.empty-state-icon {
+    @apply mx-auto h-12 w-12 text-gray-400;
+}
+
+.empty-state-title {
+    @apply mt-2 text-sm font-medium text-gray-900;
+}
+
+.empty-state-description {
+    @apply mt-1 text-sm text-gray-500;
+}
+
+.empty-state-actions {
+    @apply mt-6;
+}
