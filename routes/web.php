@@ -9,3 +9,8 @@ Route::post('/contacts', [CreateContactController::class, 'store'])->name('conta
 Route::get('/contacts/{id}/edit', [CreateContactController::class, 'edit'])->name('contacts.edit');
 Route::put('/contacts/{id}', [CreateContactController::class, 'update'])->name('contacts.update');
 Route::delete('/contacts/{id}', [CreateContactController::class, 'destroy'])->name('contacts.destroy');
+
+// Trash routes
+Route::get('/contacts/trash', [CreateContactController::class, 'trash'])->name('contacts.trash');
+Route::patch('/contacts/{id}/restore', [CreateContactController::class, 'restore'])->name('contacts.restore');
+Route::delete('/contacts/{id}/force-delete', [CreateContactController::class, 'forceDelete'])->name('contacts.force-delete');

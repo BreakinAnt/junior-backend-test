@@ -76,4 +76,49 @@ class ContactRepository implements ContactRepositoryInterface
 
         return $contact->delete();
     }
+
+    /**
+     * Get paginated trashed contacts
+     *
+     * @param int $perPage
+     * @return \Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function getTrashedPaginated(int $perPage = 10)
+    {
+        return Contact::onlyTrashed()->orderBy('deleted_at', 'desc')->paginate($perPage);
+    }
+
+    /**
+     * Restore a trashed contact
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function restore(int $id): bool
+    {
+        $contact = Contact::onlyTrashed()->find($id);
+        
+        if (!$contact) {
+            return false;
+        }
+
+        return $contact->restore();
+    }
+
+    /**
+     * Permanently delete a contact
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function forceDelete(int $id): bool
+    {
+        $contact = Contact::onlyTrashed()->find($id);
+        
+        if (!$contact) {
+            return false;
+        }
+
+        return $contact->forceDelete();
+    }
 }

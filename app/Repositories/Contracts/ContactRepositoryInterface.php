@@ -40,4 +40,28 @@ interface ContactRepositoryInterface
      * @return bool
      */
     public function delete(int $id): bool;
+
+    /**
+     * Get paginated trashed contacts
+     *
+     * @param int $perPage
+     * @return \Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function getTrashedPaginated(int $perPage = 10);
+
+    /**
+     * Restore a trashed contact
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function restore(int $id): bool;
+
+    /**
+     * Permanently delete a contact
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function forceDelete(int $id): bool;
 }

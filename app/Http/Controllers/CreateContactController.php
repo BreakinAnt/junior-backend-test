@@ -111,14 +111,72 @@ class CreateContactController extends Controller
             DB::commit();
 
             return redirect()->route('contacts.index')
-                ->with('success', 'Contact deleted successfully!')
-                ->setStatusCode(200);;
+                ->with('success', 'Contact moved to trash successfully!');
         } catch (\Exception $e) {
             DB::rollBack();
             report($e);
             
-            return to_route('contacts.index')
+            return redirect()->route('contacts.index')
                 ->with('error', 'Error deleting contact: ' . $e->getMessage());
+        }
+    }
+
+    public function trash()
+    {
+        $contacts = $this->contactService->getTrashedPagination(10);
+
+        return Inertia::render('Contacts/Trash', compact('contacts'));
+    }
+
+    public function restore(int $id)
+    {
+        DB::beginTransaction();
+
+        try {
+            $restored = $this->contactService->restoreContact($id);
+            
+            if (!$restored) {
+                DB::rollBack();
+                return redirect()->route('contacts.trash')
+                    ->with('error', 'Contact not found in trash.');
+            }
+
+            DB::commit();
+
+            return redirect()->route('contacts.trash')
+                ->with('success', 'Contact restored successfully!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            report($e);
+            
+            return redirect()->route('contacts.trash')
+                ->with('error', 'Error restoring contact: ' . $e->getMessage());
+        }
+    }
+
+    public function forceDelete(int $id)
+    {
+        DB::beginTransaction();
+
+        try {
+            $deleted = $this->contactService->forceDeleteContact($id);
+            
+            if (!$deleted) {
+                DB::rollBack();
+                return redirect()->route('contacts.trash')
+                    ->with('error', 'Contact not found in trash.');
+            }
+
+            DB::commit();
+
+            return redirect()->route('contacts.trash')
+                ->with('success', 'Contact permanently deleted!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            report($e);
+            
+            return redirect()->route('contacts.trash')
+                ->with('error', 'Error permanently deleting contact: ' . $e->getMessage());
         }
     }
 }

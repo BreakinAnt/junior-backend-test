@@ -90,6 +90,39 @@ class ContactService
     }
 
     /**
+     * Get paginated trashed contacts
+     *
+     * @param int $perPage
+     * @return LengthAwarePaginator
+     */
+    public function getTrashedPagination(int $perPage = 10): LengthAwarePaginator
+    {
+        return $this->contactRepository->getTrashedPaginated($perPage);
+    }
+
+    /**
+     * Restore a trashed contact
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function restoreContact(int $id): bool
+    {
+        return $this->contactRepository->restore($id);
+    }
+
+    /**
+     * Permanently delete a contact
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function forceDeleteContact(int $id): bool
+    {
+        return $this->contactRepository->forceDelete($id);
+    }
+
+    /**
      *
      * @param array $data
      * @return array
