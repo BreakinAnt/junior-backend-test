@@ -72,6 +72,8 @@ class CreateContactsTest extends TestCase
 
         $response = $this->delete("/contacts/{$contact->id}");
 
+        $response = $this->delete("/contacts/{$contact->id}/force-delete");
+
         $response->assertStatus(200);
 
         $this->assertDatabaseMissing('contacts', $contact->toArray());

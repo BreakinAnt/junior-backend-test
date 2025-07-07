@@ -46,7 +46,8 @@ class CreateContactController extends Controller
 
             DB::commit();
             
-            return Inertia::render('Contacts/Create')->toResponse(\request())->setStatusCode(200);
+            return to_route('contacts.index')
+                ->with('success', 'Contact created successfully!');
         } catch (\Exception $e) {
             DB::rollBack();
             report($e);
@@ -60,9 +61,9 @@ class CreateContactController extends Controller
     public function edit(int $id)
     {
         $contact = $this->contactService->getContactById($id);
-        
+
         if (!$contact) {
-            return redirect()->route('contacts.index')
+            return to_route('contacts.index')
                 ->with('error', 'Contact not found.');
         }
 
@@ -79,16 +80,10 @@ class CreateContactController extends Controller
             
             $contact = $this->contactService->updateContact($id, $data);
 
-            if (!$contact) {
-                DB::rollBack();
-                return back()->withErrors([
-                    'message' => 'Contact not found.'
-                ])->withInput();
-            }
-
             DB::commit();
             
-            return Inertia::render('Contacts/Create', compact('contact'))->toResponse(\request())->setStatusCode(200);
+            return to_route('contacts.edit', ['id' => $contact->id])
+                ->with('success', 'Contact updated successfully!');
         } catch (\Exception $e) {
             DB::rollBack();
             report($e);
@@ -114,14 +109,14 @@ class CreateContactController extends Controller
 
             DB::commit();
 
-            return redirect()->route('contacts.index')
-                ->with('success', 'Contact moved to trash successfully!');
+            return to_route('contacts.index')
+                ->with('success', 'Contact moved to trash successfully!')
+                ->setStatusCode(200);
         } catch (\Exception $e) {
             DB::rollBack();
             report($e);
             
-            return redirect()->route('contacts.index')
-                ->with('error', 'Error deleting contact: ' . $e->getMessage());
+            return back()->withErrors(['error', 'Error deleting contact: ' . $e->getMessage()])->withInput();
         }
     }
 
@@ -145,20 +140,19 @@ class CreateContactController extends Controller
             
             if (!$restored) {
                 DB::rollBack();
-                return redirect()->route('contacts.trash')
+                return to_route('contacts.trash')
                     ->with('error', 'Contact not found in trash.');
             }
 
             DB::commit();
 
-            return redirect()->route('contacts.trash')
+            return to_route('contacts.trash')
                 ->with('success', 'Contact restored successfully!');
         } catch (\Exception $e) {
             DB::rollBack();
             report($e);
             
-            return redirect()->route('contacts.trash')
-                ->with('error', 'Error restoring contact: ' . $e->getMessage());
+            return back()->withErrors(['error', 'Error restoring contact: ' . $e->getMessage()])->withInput();
         }
     }
 
@@ -171,20 +165,19 @@ class CreateContactController extends Controller
             
             if (!$deleted) {
                 DB::rollBack();
-                return redirect()->route('contacts.trash')
+                return to_route('contacts.trash')
                     ->with('error', 'Contact not found in trash.');
             }
 
             DB::commit();
 
-            return redirect()->route('contacts.trash')
+            return to_route('contacts.trash')
                 ->with('success', 'Contact permanently deleted!');
         } catch (\Exception $e) {
             DB::rollBack();
             report($e);
             
-            return redirect()->route('contacts.trash')
-                ->with('error', 'Error permanently deleting contact: ' . $e->getMessage());
+            return back()->withErrors(['error', 'Error permanently deleting contact: ' . $e->getMessage()])->withInput();
         }
     }
 }
