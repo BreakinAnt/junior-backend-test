@@ -22,7 +22,7 @@ class CreateContactsTest extends TestCase
 
         $response = $this->post('/contacts', $data);
 
-        $response->assertStatus(200);
+        $response->assertStatus(302);
 
 
         $expected = $data;
@@ -74,7 +74,7 @@ class CreateContactsTest extends TestCase
 
         $response = $this->delete("/contacts/{$contact->id}/force-delete");
 
-        $response->assertStatus(200);
+        $response->assertStatus(302);
 
         $this->assertDatabaseMissing('contacts', $contact->toArray());
     }
@@ -112,7 +112,7 @@ class CreateContactsTest extends TestCase
 
         $response = $this->put("/contacts/{$contact->id}", $data);
 
-        $response->assertStatus(200);
+        $response->assertStatus(302);
 
         $expected = $data;
 
