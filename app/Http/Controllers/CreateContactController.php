@@ -18,11 +18,15 @@ class CreateContactController extends Controller
         $this->contactService = $contactService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $contacts = $this->contactService->getPagination(10);
+        $search = $request->get('search');
+        $sort = $request->get('sort', 'name');
+        $direction = $request->get('direction', 'asc');
+        
+        $contacts = $this->contactService->getPaginationWithFilters(10, $search, $sort, $direction);
 
-        return Inertia::render('Contacts/Index', compact(['contacts']));
+        return Inertia::render('Contacts/Index', compact(['contacts', 'search', 'sort', 'direction']));
     }
 
     public function create()
@@ -121,11 +125,15 @@ class CreateContactController extends Controller
         }
     }
 
-    public function trash()
+    public function trash(Request $request)
     {
-        $contacts = $this->contactService->getTrashedPagination(10);
+        $search = $request->get('search');
+        $sort = $request->get('sort', 'name');
+        $direction = $request->get('direction', 'asc');
+        
+        $contacts = $this->contactService->getTrashedPaginationWithFilters(10, $search, $sort, $direction);
 
-        return Inertia::render('Contacts/Trash', compact('contacts'));
+        return Inertia::render('Contacts/Trash', compact('contacts', 'search', 'sort', 'direction'));
     }
 
     public function restore(int $id)

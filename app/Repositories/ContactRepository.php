@@ -44,6 +44,58 @@ class ContactRepository implements ContactRepositoryInterface
     }
 
     /**
+     * Get paginated contacts with filters
+     *
+     * @param int $perPage
+     * @param string|null $search
+     * @param string $sortBy
+     * @param string $sortDirection
+     * @return LengthAwarePaginator
+     */
+    public function getPaginationWithFilters(int $perPage = 15, ?string $search = null, string $sortBy = 'name', string $sortDirection = 'asc'): LengthAwarePaginator
+    {
+        $query = Contact::query();
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+
+        $query->orderBy($sortBy, $sortDirection);
+
+        return $query->paginate($perPage)->withQueryString();
+    }
+
+    /**
+     * Get paginated trashed contacts with filters
+     *
+     * @param int $perPage
+     * @param string|null $search
+     * @param string $sortBy
+     * @param string $sortDirection
+     * @return LengthAwarePaginator
+     */
+    public function getTrashedPaginationWithFilters(int $perPage = 10, ?string $search = null, string $sortBy = 'name', string $sortDirection = 'asc'): LengthAwarePaginator
+    {
+        $query = Contact::onlyTrashed();
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+
+        $query->orderBy($sortBy, $sortDirection);
+
+        return $query->paginate($perPage)->withQueryString();
+    }
+
+    /**
      *
      * @param int $id
      * @param array $data

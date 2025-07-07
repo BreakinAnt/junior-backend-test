@@ -64,4 +64,26 @@ interface ContactRepositoryInterface
      * @return bool
      */
     public function forceDelete(int $id): bool;
+
+    /**
+     * Get paginated contacts with filters
+     *
+     * @param int $perPage
+     * @param string|null $search
+     * @param string $sortBy
+     * @param string $sortDirection
+     * @return \Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function getPaginationWithFilters(int $perPage = 15, ?string $search = null, string $sortBy = 'name', string $sortDirection = 'asc'): \Illuminate\Pagination\LengthAwarePaginator;
+
+    /**
+     * Get paginated trashed contacts with filters
+     *
+     * @param int $perPage
+     * @param string|null $search
+     * @param string $sortBy
+     * @param string $sortDirection
+     * @return \Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function getTrashedPaginationWithFilters(int $perPage = 10, ?string $search = null, string $sortBy = 'name', string $sortDirection = 'asc'): \Illuminate\Pagination\LengthAwarePaginator;
 }

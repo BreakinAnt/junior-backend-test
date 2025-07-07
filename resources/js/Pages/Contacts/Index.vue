@@ -38,6 +38,15 @@
                 </div>
             </div>
 
+            <!-- Filter Component -->
+            <ContactFilter 
+                :search="search || ''"
+                :sort-by="sort || 'name'"
+                :sort-direction="direction || 'asc'"
+                placeholder="Search contacts by name, email, or phone..."
+                route-name="contacts.index"
+            />
+            
             <!-- Contacts List -->
             <div v-if="contacts.data && contacts.data.length > 0" class="bg-white shadow rounded-lg overflow-hidden">
                 <div class="divide-y divide-gray-200">
@@ -173,8 +182,14 @@
 </template>
 <script setup>
 import { Link, router } from '@inertiajs/vue3'
+import ContactFilter from '@/Components/ContactFilter.vue'
 
-defineProps({ contacts: Object })
+defineProps({ 
+    contacts: Object,
+    search: String,
+    sort: String,
+    direction: String
+})
 
 // Format phone number to Brazilian format
 const formatPhone = (phone) => {

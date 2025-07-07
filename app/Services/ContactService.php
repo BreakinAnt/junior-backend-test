@@ -123,6 +123,34 @@ class ContactService
     }
 
     /**
+     * Get paginated contacts with filters
+     *
+     * @param int $perPage
+     * @param string|null $search
+     * @param string $sortBy
+     * @param string $sortDirection
+     * @return LengthAwarePaginator
+     */
+    public function getPaginationWithFilters(int $perPage = 15, ?string $search = null, string $sortBy = 'name', string $sortDirection = 'asc'): LengthAwarePaginator 
+    {
+        return $this->contactRepository->getPaginationWithFilters($perPage, $search, $sortBy, $sortDirection);
+    }
+    
+    /**
+     * Get paginated trashed contacts with filters
+     *
+     * @param int $perPage
+     * @param string|null $search
+     * @param string $sortBy
+     * @param string $sortDirection
+     * @return LengthAwarePaginator
+     */
+    public function getTrashedPaginationWithFilters(int $perPage = 10, ?string $search = null, string $sortBy = 'name', string $sortDirection = 'asc'): LengthAwarePaginator
+    {
+        return $this->contactRepository->getTrashedPaginationWithFilters($perPage, $search, $sortBy, $sortDirection);
+    }
+
+    /**
      *
      * @param array $data
      * @return array
